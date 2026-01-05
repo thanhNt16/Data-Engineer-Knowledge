@@ -125,17 +125,19 @@ graph LR
     W3 --> LH3
 ```
 
-| Feature | Data Lake | Data Warehouse | Data Lakehouse |
-|---------|-----------|---------------|---------------|
-| Storage Cost | Low | High | Low |
-| Data Types | All | Structured only | All |
-| Schema | Flexible/On-read | Enforced/On-write | Both |
-| ACID Transactions | No | Yes | Yes |
-| BI Support | Limited | Excellent | Excellent |
-| ML/AI Support | Excellent | Limited | Excellent |
-| Data Quality | Low | High | High |
+| Feature           | Data Lake        | Data Warehouse    | Data Lakehouse |
+| ----------------- | ---------------- | ----------------- | -------------- |
+| Storage Cost      | Low              | High              | Low            |
+| Data Types        | All              | Structured only   | All            |
+| Schema            | Flexible/On-read | Enforced/On-write | Both           |
+| ACID Transactions | No               | Yes               | Yes            |
+| BI Support        | Limited          | Excellent         | Excellent      |
+| ML/AI Support     | Excellent        | Limited           | Excellent      |
+| Data Quality      | Low              | High              | High           |
 
 ## Core Technologies
+### Iceberg
+- Data + Metadata
 
 ### Delta Lake
 - ACID transactions on data lake
