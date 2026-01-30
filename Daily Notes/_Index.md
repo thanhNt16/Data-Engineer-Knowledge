@@ -16,6 +16,9 @@ This folder contains daily learning notes for data engineering knowledge buildin
 
 #### January
 
+##### 2026-01-30
+- [2026-01-30](2026-01-30/2026-01-30.md) - OpenClaw AI assistant setup and Telegram bot integration
+
 ##### 2026-01-11
 - [Data Modeling](2026-01-11/Data%20Modeling.md) - Six data modeling techniques for production-ready tables
 - [Advanced SQL](2026-01-11/Advanced%20SQL.md) - SQL techniques, query optimization, and data modeling
