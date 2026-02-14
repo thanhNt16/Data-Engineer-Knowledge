@@ -389,3 +389,196 @@ Data Engineer → Platform Engineer → Data Product Manager
 - [ ] Practice Dagster vs Airflow comparison
 - [ ] Build streaming-first lakehouse prototype
 - [ ] Implement data quality checks (Great Expectations)
+
+---
+
+## Practical Examples: Python & SQL
+
+### 1. Zero ETL: Change Data Capture (CDC)
+
+**Python: Debezium CDC Setup**
+
+```python
+from kafka import KafkaProducer
+import json
+
+# Producer for CDC events
+cdc_producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+# Process CDC change events
+def handle_cdc_event(event):
+    """Event structure: before/after, op (c=create, u=update, d=delete)"""
+    if event['op'] == 'c':  # Create
+        handle_insert(event['after'])
+    elif event['op'] == 'u':  # Update
+        handle_update(event['before'], event['after'])
+    elif event['op'] == 'd':  # Delete
+        handle_delete(event['before'])
+
+# Ingest CDC events to lakehouse
+def handle_insert(record):
+    write_to_iceberg('users', record)
+
+def handle_update(before, after):
+    upsert_to_iceberg('users', after)
+```
+
+**SQL: Merge CDC Changes (Upsert)**
+
+```sql
+-- PostgreSQL: Handle CDC events from Kafka
+MERGE INTO target_users AS target
+USING staging_users AS source
+ON target.id = source.id
+WHEN MATCHED THEN
+    UPDATE SET name = source.name, email = source.email
+WHEN NOT MATCHED THEN
+    INSERT (id, name, email) VALUES (source.id, source.name, source.email);
+```
+
+---
+
+### 2. Streaming-First Lakehouse
+
+**Python: Kafka to Iceberg Pipeline**
+
+```python
+from pyiceberg import Catalog
+
+# Iceberg catalog (lakehouse storage)
+catalog = Catalog.load_hadoop_catalog('warehouse', '/data/lakehouse')
+
+# Load Iceberg table
+table = catalog.load_table('default.orders')
+
+# Stream orders to lakehouse
+for message in consumer:
+    order = json.loads(message.value().decode('utf-8'))
+    table.append(order)  # Append-only for streaming
+```
+
+**SQL: Query Iceberg Lakehouse**
+
+```sql
+-- Time travel: Query as of 1 hour ago
+SELECT * FROM orders AS OF SYSTEM TIME '2024-02-14 15:30:00';
+
+-- Streaming aggregation: Last 5 minutes
+SELECT DATE_TRUNC('minute', order_time) AS window_start,
+       COUNT(*) AS order_count,
+       SUM(amount) AS total_revenue
+FROM orders
+WHERE order_time >= NOW() - INTERVAL '5 minutes'
+GROUP BY window_start;
+```
+
+---
+
+### 3. Data Quality Checks
+
+**Python: Great Expectations**
+
+```python
+from great_expectations.data_context import DataContext
+
+context = DataContext()
+
+# Define expectations
+expectations = [
+    {'expect_column_to_exist': {'column': 'order_id'}},
+    {'expect_column_values_to_not_be_null': {'column': 'order_id'}},
+    {'expect_column_values_to_be_unique': {'column': 'order_id'}},
+    {'expect_column_values_to_be_between': {'column': 'amount', 'min_value': 0, 'max_value': 100000}}
+]
+
+# Run validation
+validation_result = context.run_expectation_suite(
+    expectations=expectations,
+    batch_kwargs={'datasource': 'postgres', 'table': 'orders'}
+)
+```
+
+**SQL: Data Quality Checks**
+
+```sql
+-- Null checks
+SELECT 'null_order_id' AS check, COUNT(*) AS failed_count
+FROM orders WHERE order_id IS NULL
+UNION ALL
+SELECT 'negative_amount' AS check, COUNT(*) AS failed_count
+FROM orders WHERE amount < 0;
+
+-- Data freshness (CDC latency)
+SELECT MAX(NOW() - updated_at) AS max_latency_seconds
+FROM orders WHERE updated_at >= NOW() - INTERVAL '1 hour';
+```
+
+---
+
+### 4. Modern Orchestration: Dagster vs Airflow
+
+**Python: Dagster Software-Defined Assets**
+
+```python
+from dagster import asset, repository
+import pandas as pd
+
+@asset
+def raw_orders():
+    """Ingest raw orders from source"""
+    return fetch_from_api('/orders')
+
+@asset(deps=[raw_orders])
+def cleaned_orders(raw_orders: pd.DataFrame):
+    """Clean and validate orders"""
+    df = raw_orders.copy()
+    df = df.dropna(subset=['order_id', 'user_id'])
+    df = df[df['amount'] > 0]
+    return df
+
+@repository
+def my_repo():
+    return [raw_orders, cleaned_orders]
+```
+
+**Python: Airflow DAG (Traditional)**
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+
+def extract_orders(**context):
+    return fetch_from_api('/orders')
+
+def clean_orders(**context):
+    ti = context['ti']
+    raw_orders = ti.xcom_pull(task_ids='extract')
+    df = pd.DataFrame(raw_orders)
+    df = df.dropna()
+    return df.to_json()
+
+dag = DAG('orders_pipeline', schedule_interval='@daily', start_date=datetime(2024, 2, 14))
+
+extract = PythonOperator(task_id='extract', python_callable=extract_orders, dag=dag)
+clean = PythonOperator(task_id='clean', python_callable=clean_orders, dag=dag)
+
+extract >> clean
+```
+
+---
+
+## Comparison: Traditional vs 2026 Approaches
+
+| Operation | Traditional (Batch ETL) | 2026 (Streaming/Zero ETL) |
+|-----------|------------------------|-------------------------------|
+| **Data ingestion** | Daily/nightly batch jobs | Real-time CDC streams |
+| **Latency** | Hours/days | Seconds/minutes |
+| **Python** | Scripts with `pandas.read_csv()` | `KafkaProducer`, CDC handlers |
+| **SQL** | `INSERT INTO staging SELECT * FROM source` | `MERGE INTO target USING source` |
+| **Orchestration** | Airflow DAGs with schedule | Dagster assets (materialize on demand) |
+| **Data quality** | Post-processing checks | Built-in contracts/expectations |
+| **Architecture** | Data warehouse | Lakehouse (streaming + time travel) |
