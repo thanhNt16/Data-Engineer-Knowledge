@@ -5,7 +5,7 @@
 ## 📊 Overall Progress
 
 ```
-Overall Completion: ████████░░░░░░░░░░░░ 38%
+Overall Completion: ██████████░░░░░░░░░░ 31%
 ```
 
 ---
@@ -51,7 +51,7 @@ Overall Completion: ████████░░░░░░░░░░░░
 | Skill | Level | Status | Last Updated | Notes |
 |-------|-------|--------|--------------|-------|
 | Batch Processing | 🟢 Proficient | ✅ Learned | - | Scheduled jobs |
-| Stream Processing | 🔴 Not Started | ⏳ To Learn | - | Real-time concepts |
+| Stream Processing | 🟡 Learning | 🔄 In Progress | 2026-02-14 | See Streaming category for details |
 | Multi-hop Architecture | 🟢 Proficient | ✅ Learned | 2026-01-11 | Staging → Core → Serving |
 | Data Validation | 🟡 Learning | 🔄 In Progress | 2026-01-11 | Quality checks |
 | Error Handling | 🟡 Learning | 🔄 In Progress | - | Retry logic, dead letter queues |
@@ -101,16 +101,16 @@ Overall Completion: ████████░░░░░░░░░░░░
 
 | Skill | Level | Status | Last Updated | Notes |
 |-------|-------|--------|--------------|-------|
-| Stream Processing Concepts | 🔴 Not Started | ⏳ To Learn | - | Batch vs streaming |
-| Apache Kafka | 🔴 Not Started | ⏳ To Learn | - | Producers, consumers |
+| Stream Processing Concepts | 🟡 Learning | 🔄 In Progress | 2026-02-14 | Flink architecture, stateful processing |
+| Apache Kafka | 🟡 Learning | 🔄 In Progress | 2026-02-14 | Producers, consumers, partitions, consumer groups |
 | Kinesis | 🔴 Not Started | ⏳ To Learn | - | AWS streaming |
 | Pub/Sub | 🔴 Not Started | ⏳ To Learn | - | GCP messaging |
-| Windowing | 🔴 Not Started | ⏳ To Learn | - | Tumbling, sliding |
-| Watermarks | 🔴 Not Started | ⏳ To Learn | - | Late data handling |
-| Exactly-Once | 🔴 Not Started | ⏳ To Learn | - | Semantics |
-| Backpressure | 🔴 Not Started | ⏳ To Learn | - | Flow control |
+| Windowing | 🟡 Learning | 🔄 In Progress | 2026-02-14 | Tumbling, sliding, session |
+| Watermarks | 🟡 Learning | 🔄 In Progress | 2026-02-14 | Event time progress, late data |
+| Exactly-Once | 🟡 Learning | 🔄 In Progress | 2026-02-14 | Checkpoint barriers, semantics |
+| Backpressure | 🟡 Learning | 🔄 In Progress | 2026-02-14 | Flow control, credit-based protocol |
 
-**Streaming Progress**: ░░░░░░░░░░░░░░░░░░░░ 0% (0/8)
+**Streaming Progress**: ██████████░░░░░░░░░░ 75% (6/8)
 
 ---
 
@@ -237,7 +237,7 @@ Overall Completion: ████████░░░░░░░░░░░░
 | ETL/ELT & Pipelines | 3 | 8 | 38% |
 | Data Warehousing | 3 | 8 | 38% |
 | Orchestration | 2 | 8 | 25% |
-| Streaming | 0 | 8 | 0% |
+| Streaming | 6 | 8 | 75% |
 | System Design | 2 | 8 | 25% |
 | AWS | 2 | 8 | 25% |
 | GCP | 0 | 8 | 0% |
@@ -245,7 +245,7 @@ Overall Completion: ████████░░░░░░░░░░░░
 | Coding & DSA | 3 | 8 | 38% |
 | Data Quality | 1 | 8 | 13% |
 | Tools | 2 | 8 | 25% |
-| **TOTAL** | **26** | **104** | **25%** |
+| **TOTAL** | **32** | **104** | **31%** |
 
 ---
 
@@ -277,7 +277,8 @@ Based on interview frequency and current skill gaps:
 | Date | Updates |
 |------|---------|
 | 2026-01-11 | Initial setup, added SQL & Data Modeling skills |
-| | |
+| 2026-02-14 | Added Apache Flink streaming content, updated Streaming skills (5/8 = 63%) |
+| 2026-02-14 | Added Apache Kafka with producer/consumer examples, updated Streaming skills (6/8 = 75%) |
 
 ---
 
