@@ -1,3 +1,9 @@
+---
+tags: [architecture, streaming, lambda, archived, historical]
+date: 2026-02-15
+status: archived
+---
+
 # Lambda Architecture
 
 Lambda architecture is a data processing pattern designed to strike a balance between low latency, high throughput, and fault tolerance. This architecture type uses a combination of batch processing to create accurate views of large data sets and real-time stream processing to provide views of live data. The results from both sets can then be merged and presented together.
@@ -61,6 +67,20 @@ graph LR
 **Evolution**:
 - [Kappa Architecture](Kappa%20Architecture.md) was created to address Lambda's complexity
 - Often implemented with [Data Lakes](Data%20Lake.md) as the storage layer
+- Modern alternative: [[Data Engineering Trends 2026]] streaming-first architecture
+
+---
+
+**Alternative Streaming Approaches**:
+- [[Apache Flink - Real-Time Analytics]] - Stateful stream processing
+- [[Apache Kafka - Event Streaming]] - Real-time event streaming
+
+---
+
+**Related in Current Vault**:
+- [[Data Engineering Trends 2026]] - Streaming-First Lakehouse as modern approach
+- [[Apache Flink - Real-Time Analytics]] - Real-time processing capabilities
+- [[Apache Kafka - Event Streaming]] - Event streaming for real-time layer
 
 ---
 
