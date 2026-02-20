@@ -1,6 +1,24 @@
+---
+title: Data Modeling
+aliases:
+  - Data Model Design
+tags:
+  - data-modeling
+  - data-warehouse
+  - dimensional-modeling
+  - star-schema
+  - snowflake-schema
+date: 2024-02-19
+status: active
+---
+
 # Data Modeling
 
-Data modeling is the process of creating a data model for the data to be stored in a data warehouse. It organizes data elements and standardizes how the individual data elements relate to one another. A well-designed data model enables fast, consistent delivery of production-ready tables while maintaining data quality and reducing technical debt.
+> [!abstract] What is Data Modeling?
+> Data modeling is the **structured process of defining how data is organized, stored, and interrelated** within a system. It acts as a blueprint, mapping relationships between different data elements, establishing rules to maintain data integrity, and determining how information flows through the system.
+
+> [!warning] The Problem with Messy Data
+> Having data alone is not enough if it is messy, disorganized, or not properly arranged. Data in this state is like **garbage lying around**: it exists, but it is unusable. To make data useful, extract insights, apply analytics, or build models, we need to organize and structure it.
 
 ## Why Data Modeling Matters
 
@@ -9,6 +27,135 @@ Data modeling is the process of creating a data model for the data to be stored 
 - Helps demonstrate value to stakeholders
 - Builds trust between data teams and end users
 - Enables predictable career growth for data engineers
+- Makes data **accessible, understandable, and useful** for end users or stakeholders
+
+---
+
+## Problems Where Data Modeling Is Needed
+
+> [!tip] When to Apply Data Modeling
+
+| Scenario | Description |
+|----------|-------------|
+| **Designing New Systems** | Define entities, attributes, and relationships before any data exists |
+| **Integrating Multiple Sources** | Unify and structure data from different formats and systems |
+| **Building Analytical/BI Systems** | Create clean, connected, and queryable data for reporting |
+| **ML & AI Pipelines** | Ensure consistent, structured features and metadata |
+| **Evolving Systems** | Create flexible models for new business requirements |
+
+---
+
+## Types of Data Models
+
+> [!info] Three Levels of Data Design
+> There are three main types of data models, each representing a different stage of data design. These models help move from business understanding to actual database implementation.
+
+```mermaid
+graph LR
+    A[Business Requirements] --> B[Conceptual Model]
+    B --> C[Logical Model]
+    C --> D[Physical Model]
+    D --> E[Database Implementation]
+
+    style B fill:#e1f5fe
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+```
+
+### 1. Conceptual Data Model
+
+> [!note] High-Level Business View
+> A conceptual data model provides a **high-level view of the data**. It defines key business entities and their relationships without getting into technical details.
+
+**Characteristics:**
+- Used during early planning and stakeholder discussions
+- Focuses purely on business concepts
+- Uses **Entity-Relationship (ER) modeling**
+
+**Example:** An ER diagram showing how Customers, Orders, and Products relate to each other.
+
+### 2. Logical Data Model
+
+> [!tip] Bridge Between Business and Technology
+> The logical data model defines **how data will be structured** while remaining independent of any specific database technology.
+
+**Characteristics:**
+- Detailed definitions of attributes, relationships, and constraints
+- Technology-agnostic
+- Uses ER modeling, dimensional modeling, or object-oriented modeling
+
+**Example:** A star schema defining a Sales fact table with dimension tables (Time, Product, Customer) — without deciding storage implementation.
+
+### 3. Physical Data Model
+
+> [!success] Implementation-Ready Design
+> The physical data model represents **how data is actually stored** in a database system.
+
+**Characteristics:**
+- Defines tables, indexes, partitions, and storage mechanisms
+- Optimized for performance and scalability
+- Database-specific implementation
+
+**Example:** An optimized star schema in PostgreSQL or MongoDB documents storing user profiles as JSON.
+
+---
+
+## Dimensional Modeling
+
+> [!abstract] What is Dimensional Modeling?
+> Dimensional modeling is a type of data modeling **specifically designed for analytical systems**. Its primary goal is improved query performance and simpler data access.
+
+**Why It's Popular:**
+- Balances **Performance**, **Simplicity**, and **Business understanding**
+- Most widely used approach in modern data stacks
+- Categorizes data into two buckets: **Facts** and **Dimensions**
+
+### Facts vs Dimensions
+
+| Aspect | Facts | Dimensions |
+|--------|-------|------------|
+| **Represents** | Actions, events, results (verbs) | Context, entities (nouns) |
+| **Examples** | Account created, Payment made, Email sent | Users, Customers, Products, Time |
+| **Contains** | Often numeric values | Descriptive attributes |
+| **Answers** | "What happened?" | "Who/what/where/when?" |
+
+> [!tip] Simple Rule of Thumb
+> - If it feels like an **event** → model it as a **fact**
+> - If it feels like **context** → model it as a **dimension**
+>
+> Don't overthink it! Data models can evolve. You're not a surgeon — no one will die if you remodel a table later.
+
+### Drawbacks of Dimensional Modeling
+
+> [!warning] Common Challenges
+> - **BI tool dependency**: Some BI tools don't handle joins efficiently
+> - **Wide table issues**: Others struggle with very wide tables
+> - **Performance impact**: Poor tooling can lead to slow or complex queries
+>
+> **Solution:** Align your data model with your query engine and BI stack.
+
+---
+
+## Data Modeling in Data Warehouses
+
+> [!info] What is a Data Warehouse?
+> A data warehouse is primarily used for **OLAP (Online Analytical Processing)** workloads. It optimizes for:
+> - Read performance
+> - Aggregations
+> - Joins
+> - Historical analysis
+
+### Common Techniques
+
+| Technique | Description |
+|-----------|-------------|
+| **Star Schema** | Central fact table joins directly to multiple dimension tables |
+| **Snowflake Schema** | Extension of star schema where dimensions are further normalized |
+
+> [!note] Related Notes
+> See [[Star Schema]] and [[Snowflake Schema]] for detailed patterns.
+
+---
 
 ## Six Techniques for Production-Ready Tables
 
@@ -89,6 +236,60 @@ As companies grow, metrics and teams tracking them multiply. Centralized definit
 
 **Key Principle**: Ensure metrics have clear ownership. Scattered metrics make debugging difficult.
 
+---
+
+## Best Practices for Data Modeling
+
+> [!success] Key Principles
+
+### 1. Understand Business Requirements
+Ensure the model supports the insights needed for decision-making. Before creating schemas:
+- What insights are needed?
+- How will data be accessed and updated?
+- What performance trade-offs are acceptable?
+
+### 2. Design for Flexibility
+Allow the model to scale and adapt as business needs change.
+
+### 3. Optimize for Query Performance
+Use indexing, partitioning, and denormalization where appropriate.
+
+### 4. Maintain Data Integrity
+Apply constraints and relationships to prevent inconsistencies.
+
+### 5. Document the Data Model
+Clear documentation ensures the model is understandable and maintainable.
+
+---
+
+## Choosing the Right Approach
+
+> [!tip] Questions to Ask Before Committing
+
+| Question | Consideration |
+|----------|---------------|
+| What are the primary end-use cases? | Determines structure needed |
+| Who will query the data? | Affects complexity and naming |
+| How many data sources are involved? | Impacts integration strategy |
+| Which technique fits our stack? | Align with tools and warehouse |
+| How will this support governance? | Standardization requirements |
+
+### Decision Factors
+
+When selecting a modeling approach, consider:
+- **Analytical requirements**: What questions need to be answered?
+- **Data volume and scalability**: How much data exists now and in the future?
+- **Ease of use**: Who will query the data?
+- **Flexibility**: How often will requirements change?
+- **Performance trade-offs**: Faster queries vs increased storage and redundancy
+
+---
+
+> [!quote] The Best Technique Is a Consistent One
+> There's no single "right" or "wrong" data modeling technique — the best choice depends on your data, business needs, and team skillset. Choose a technique that is **practical, scalable, and consistent** across your organization.
+
+---
+
 ## When to Break These Recommendations
 
 These techniques are guidelines, not rules. Break them when you have a clear, specific use case that requires deviation.
@@ -127,4 +328,20 @@ graph LR
 
 ---
 
-**Source**: [Start Data Engineering - Six Data Modeling Techniques](https://www.startdataengineering.com/post/fast-consistent-data-model/)
+## Conclusion
+
+> [!abstract] Key Takeaway
+> Data modeling is the **foundation that turns raw data into reliable insights**. While it applies across many systems, it becomes most critical in analytical and data warehouse environments where structure, performance, and consistency matter.
+>
+> A well-designed data model:
+> - Reflects business needs
+> - Enables efficient analytics
+> - Builds trust in data
+>
+> **If data is meant to drive decisions, strong data modeling is essential.**
+
+---
+
+**Sources:**
+- [Start Data Engineering - Six Data Modeling Techniques](https://www.startdataengineering.com/post/fast-consistent-data-model/)
+- Data Modeling Fundamentals Guide
